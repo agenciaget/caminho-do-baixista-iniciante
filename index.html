@@ -60,13 +60,28 @@ body {
 /* ── INPUTS ── */
 .input-line {
   display:block; width:100%;
-  background:transparent; border:none;
-  border-bottom:1px solid rgba(155,143,122,.4);
-  color:#e2e2e2; font-family:'Inter',sans-serif; font-size:15px;
-  padding:11px 0; outline:none; transition:border-color .2s;
+  background:transparent !important;
+  background-color:transparent !important;
+  border:none !important;
+  border-bottom:1px solid rgba(155,143,122,.4) !important;
+  border-radius:0 !important;
+  color:#e2e2e2 !important;
+  font-family:'Inter',sans-serif; font-size:15px;
+  padding:11px 0; outline:none !important;
+  box-shadow:none !important;
+  transition:border-color .2s;
+  -webkit-appearance:none; appearance:none;
 }
-.input-line:focus  { border-bottom-color:#d4a017; }
-.input-line::placeholder { color:#444; }
+.input-line:focus { border-bottom-color:#d4a017 !important; }
+.input-line::placeholder { color:#555; }
+/* Neutraliza o fundo amarelo do autofill do browser */
+.input-line:-webkit-autofill,
+.input-line:-webkit-autofill:hover,
+.input-line:-webkit-autofill:focus {
+  -webkit-box-shadow:0 0 0 60px #0d0e0e inset !important;
+  -webkit-text-fill-color:#e2e2e2 !important;
+  caret-color:#e2e2e2;
+}
 
 /* ── CARD LEFT-BAR HOVER ── */
 .c-bar { position:relative; overflow:hidden; }
@@ -857,7 +872,7 @@ body {
     <form id="reg-form" novalidate>
       <div class="mb-7">
         <label class="block text-[11px] font-bold tracking-[.1em] text-outline uppercase mb-2" for="fn">Nome</label>
-        <input class="input-line" type="text" id="fn" name="nome" placeholder="Seu nome completo" autocomplete="name" required>
+        <input class="input-line" type="text" id="fn" name="nome" placeholder="Seu nome" autocomplete="name" required>
       </div>
       <div class="mb-7">
         <label class="block text-[11px] font-bold tracking-[.1em] text-outline uppercase mb-2" for="fe">E-mail</label>
@@ -901,18 +916,58 @@ document.getElementById('fp').addEventListener('input',function(e){
 });
 
 /* SUBMIT */
-document.getElementById('reg-form').addEventListener('submit',function(e){
+document.getElementById('reg-form').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const name=document.getElementById('fn').value.trim();
-  const email=document.getElementById('fe').value.trim();
-  const phone=document.getElementById('fp').value.trim();
-  if(!name||!email||!phone)return;
-  // Integre aqui: fetch('/api/register',{method:'POST',body:JSON.stringify({name,email,phone})})
-  closeModal();
-  document.getElementById('page-main').style.display='none';
-  const c=document.getElementById('page-confirm');
-  c.classList.add('show');
-  window.scrollTo({top:0,behavior:'instant'});
+
+  const name  = document.getElementById('fn').value.trim();
+  const email = document.getElementById('fe').value.trim();
+  const phone = document.getElementById('fp').value.trim();
+  if (!name || !email || !phone) return;
+
+  const btn  = this.querySelector('button[type="submit"]');
+  const orig = btn.innerHTML;
+
+  // Estado de carregamento
+  btn.innerHTML = 'Enviando&hellip;';
+  btn.disabled  = true;
+  btn.style.opacity = '0.7';
+
+  // Remove erro anterior, se houver
+  const prevErr = document.getElementById('form-error');
+  if (prevErr) prevErr.remove();
+
+  try {
+    const res = await fetch('/api/subscribe', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ name, email, phone }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Erro desconhecido.');
+    }
+
+    closeModal();
+    document.getElementById('page-main').style.display = 'none';
+    document.getElementById('page-confirm').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+  } catch (err) {
+    console.error('[Formulário]', err.message);
+
+    // Restaura botão
+    btn.innerHTML = orig;
+    btn.disabled  = false;
+    btn.style.opacity = '1';
+
+    // Exibe mensagem inline
+    const errEl = document.createElement('p');
+    errEl.id = 'form-error';
+    errEl.style.cssText = 'color:#ff6b6b;font-size:12px;text-align:center;margin-top:10px;';
+    errEl.textContent = 'Ocorreu um erro. Verifique seus dados e tente novamente.';
+    btn.insertAdjacentElement('afterend', errEl);
+  }
 });
 
 /* PULSE DOT ANIMATION */
