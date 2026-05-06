@@ -10,488 +10,915 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-<script id="tw-config">
+<script>
 tailwind.config = {
-  darkMode: 'class',
-  theme: {
-    extend: {
-      colors: {
-        'background':               '#0B0B0D',
-        'surface':                  '#121414',
-        'surface-low':              '#1a1c1c',
-        'surface-mid':              '#1e2020',
-        'surface-high':             '#282a2b',
-        'surface-highest':          '#333535',
-        'on-bg':                    '#e2e2e2',
-        'on-surface':               '#e2e2e2',
-        'on-variant':               '#d3c5ae',
-        'outline':                  '#9b8f7a',
-        'outline-dim':              '#4f4634',
-        'gold':                     '#f6be39',
-        'gold-dark':                '#d4a017',
-        'gold-muted':               '#5c4300',
-      },
-      fontFamily: {
-        grotesk: ['Space Grotesk', 'sans-serif'],
-        sans:    ['Inter', 'sans-serif'],
-      },
+  darkMode:'class',
+  theme:{extend:{
+    colors:{
+      'bg':     '#0B0B0D',
+      'surface':'#121414',
+      's-low':  '#1a1c1c',
+      's-mid':  '#1e2020',
+      'on-bg':  '#e2e2e2',
+      'on-var': '#d3c5ae',
+      'outline':'#9b8f7a',
+      'out-dim':'#4f4634',
+      'gold':   '#f6be39',
+      'gold-d': '#d4a017',
+    },
+    fontFamily:{
+      grotesk:['Space Grotesk','sans-serif'],
+      sans:   ['Inter','sans-serif'],
     }
-  }
+  }}
 }
 </script>
 
 <style>
-  /* ── NOISE TEXTURE ── */
-  body {
-    background-color: #0B0B0D;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
-  }
+/* ── NOISE TEXTURE ── */
+body {
+  background-color:#0B0B0D;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
 
-  /* ── GLOWS ── */
-  .glow-gold      { box-shadow: 0 0 40px rgba(212,160,23,0.22); }
-  .glow-gold-btn:hover { box-shadow: 0 0 55px rgba(212,160,23,0.35); }
-  .glow-dot       { box-shadow: 0 0 7px rgba(212,160,23,0.6); }
+/* ── BUTTONS ── */
+.btn-gold {
+  background:#D4A017; color:#0B0B0D;
+  font-family:'Inter',sans-serif; font-weight:700;
+  text-transform:uppercase; letter-spacing:.07em;
+  border:none; cursor:pointer;
+  transition: box-shadow .25s ease, transform .2s ease, filter .2s ease;
+  box-shadow: 0 0 36px rgba(212,160,23,.22);
+}
+.btn-gold:hover {
+  box-shadow: 0 0 60px rgba(212,160,23,.42);
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+.btn-gold:active { transform:translateY(0); }
 
-  /* ── INPUT LINE STYLE ── */
-  .input-line {
-    display: block; width: 100%;
-    background: transparent;
-    border: none; border-bottom: 1px solid rgba(155,143,122,0.45);
-    color: #e2e2e2; font-family: 'Inter', sans-serif; font-size: 15px;
-    padding: 10px 0; outline: none; transition: border-color .2s;
-  }
-  .input-line:focus  { border-bottom-color: #d4a017; }
-  .input-line::placeholder { color: #555; }
+/* ── INPUTS ── */
+.input-line {
+  display:block; width:100%;
+  background:transparent; border:none;
+  border-bottom:1px solid rgba(155,143,122,.4);
+  color:#e2e2e2; font-family:'Inter',sans-serif; font-size:15px;
+  padding:11px 0; outline:none; transition:border-color .2s;
+}
+.input-line:focus  { border-bottom-color:#d4a017; }
+.input-line::placeholder { color:#444; }
 
-  /* ── CARD LEFT BAR ANIMATION ── */
-  .card-bar::before {
-    content: ''; position: absolute; top: 0; left: 0;
-    width: 2px; height: 100%;
-    background: #d4a017;
-    transform: scaleY(0); transform-origin: top;
-    transition: transform .3s ease;
-  }
-  .card-bar:hover::before { transform: scaleY(1); }
+/* ── CARD LEFT-BAR HOVER ── */
+.c-bar { position:relative; overflow:hidden; }
+.c-bar::before {
+  content:''; position:absolute; top:0; left:0;
+  width:2px; height:100%; background:#d4a017;
+  transform:scaleY(0); transform-origin:top;
+  transition:transform .3s ease;
+}
+.c-bar:hover::before { transform:scaleY(1); }
 
-  /* ── MODAL ── */
-  #modal-overlay {
-    position: fixed; inset: 0; z-index: 300;
-    background: rgba(0,0,0,0.88);
-    backdrop-filter: blur(8px);
-    display: flex; align-items: center; justify-content: center;
-    padding: 24px;
-    opacity: 0; pointer-events: none;
-    transition: opacity .22s ease;
-  }
-  #modal-overlay.open { opacity: 1; pointer-events: all; }
-  #modal-box {
-    transform: translateY(14px) scale(.98);
-    transition: transform .26s ease;
-  }
-  #modal-overlay.open #modal-box { transform: translateY(0) scale(1); }
+/* ── GOLD DOT GLOW ── */
+.gdot {
+  display:inline-block; border-radius:50%;
+  background:#D4A017;
+  box-shadow: 0 0 8px rgba(212,160,23,.65);
+  flex-shrink:0;
+}
 
-  /* ── CONFIRM ── */
-  #page-confirm { display: none; }
-  #page-confirm.show { display: flex; }
+/* ── MODAL ── */
+#modal-wrap {
+  position:fixed; inset:0; z-index:300;
+  display:flex; align-items:center; justify-content:center; padding:24px;
+  background:rgba(0,0,0,.88); backdrop-filter:blur(8px);
+  opacity:0; pointer-events:none; transition:opacity .22s ease;
+}
+#modal-wrap.open { opacity:1; pointer-events:all; }
+#modal-box { transform:translateY(14px) scale(.98); transition:transform .26s ease; }
+#modal-wrap.open #modal-box { transform:translateY(0) scale(1); }
 
-  /* ── STRING DIVIDER ── */
-  .strings { display: flex; flex-direction: column; gap: 3px; padding: 6px 0; }
-  .strings span:nth-child(1) { height: 1px; background: rgba(155,143,122,.25); }
-  .strings span:nth-child(2) { height: 1px; background: rgba(155,143,122,.45); }
-  .strings span:nth-child(3) { height: 2px; background: rgba(155,143,122,.38); }
-  .strings span:nth-child(4) { height: 1px; background: rgba(155,143,122,.45); }
-  .strings span:nth-child(5) { height: 1px; background: rgba(155,143,122,.25); }
+/* ── CONFIRMATION ── */
+#page-confirm { display:none; }
+#page-confirm.show { display:flex; }
 
-  /* ── PHOTO PLACEHOLDER ── */
-  .photo-placeholder {
-    background: #111315;
-    background-image:
-      linear-gradient(rgba(155,143,122,.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(155,143,122,.04) 1px, transparent 1px);
-    background-size: 32px 32px;
-  }
+/* ── STRING DIVIDER ── */
+.str-div { display:flex; flex-direction:column; gap:3px; padding:6px 0; }
+.str-div span:nth-child(1) { height:1px; background:rgba(155,143,122,.20); }
+.str-div span:nth-child(2) { height:1px; background:rgba(155,143,122,.38); }
+.str-div span:nth-child(3) { height:2px; background:rgba(155,143,122,.30); }
+.str-div span:nth-child(4) { height:1px; background:rgba(155,143,122,.38); }
+.str-div span:nth-child(5) { height:1px; background:rgba(155,143,122,.20); }
 
-  /* ── SCROLL SMOOTH ── */
-  html { scroll-behavior: smooth; }
+/* ── WAVE SVG ── */
+.wave-wrap { width:100%; overflow:hidden; line-height:0; background:#0B0B0D; }
 
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity:0; transform: translateY(18px); }
-    to   { opacity:1; transform: translateY(0); }
-  }
-  .fade-1 { animation: fadeUp .65s ease both; }
-  .fade-2 { animation: fadeUp .65s .14s ease both; }
-  .fade-3 { animation: fadeUp .65s .28s ease both; }
-  .fade-4 { animation: fadeUp .65s .44s ease both; }
-  .fade-5 { animation: fadeUp .65s .60s ease both; }
+/* ── FADE-IN ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.f1{animation:fadeUp .75s .05s ease both}
+.f2{animation:fadeUp .75s .18s ease both}
+.f3{animation:fadeUp .75s .32s ease both}
+.f4{animation:fadeUp .75s .48s ease both}
+.f5{animation:fadeUp .75s .62s ease both}
+.f6{animation:fadeUp .75s .76s ease both}
+
+/* ── ABOUT PHOTO ── */
+.about-img {
+  width:100%; height:100%;
+  object-fit:cover; object-position:center top;
+  mix-blend-mode:luminosity;
+  filter:brightness(.72) contrast(1.1);
+}
+
+/* ── PHONE MOCKUP ── */
+.phone-shell {
+  position:relative;
+  width:210px; height:415px;
+  border-radius:34px;
+  background:#0d1117;
+  border:1.5px solid rgba(155,143,122,.35);
+  box-shadow:
+    0 0 0 1px rgba(212,160,23,.08),
+    0 28px 70px rgba(0,0,0,.65),
+    inset 0 0 0 1px rgba(255,255,255,.025);
+  overflow:hidden;
+  flex-shrink:0;
+}
+.phone-notch {
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:70px; height:18px;
+  background:#0d1117;
+  border-bottom-left-radius:12px; border-bottom-right-radius:12px;
+  z-index:10;
+}
+.phone-screen {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+.wa-header {
+  display:flex; align-items:center; gap:8px;
+  padding:22px 10px 8px;
+  background:#075E54;
+  flex-shrink:0;
+}
+.wa-avatar {
+  width:32px; height:32px; border-radius:50%;
+  background:#128C7E;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; flex-shrink:0;
+}
+.wa-name  { color:#fff; font-weight:700; font-size:11px; line-height:1.2; }
+.wa-count { color:rgba(255,255,255,.6); font-size:9px; }
+.wa-body  {
+  flex:1; overflow:hidden;
+  background:#0b141a;
+  padding:10px 8px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.wa-msg {
+  background:#1f2c34;
+  color:#e2e2e2; font-size:9.5px; line-height:1.45;
+  padding:6px 8px;
+  border-radius:0 8px 8px 8px;
+  max-width:88%;
+}
+.wa-msg-name { color:#D4A017; font-size:9px; font-weight:700; margin-bottom:2px; }
+.wa-time { color:rgba(255,255,255,.35); font-size:8px; margin-top:2px; padding-left:2px; }
+.wa-msg-out {
+  align-self:flex-end;
+  background:#005c4b;
+  color:rgba(255,255,255,.75); font-size:9px; line-height:1.4;
+  padding:5px 8px;
+  border-radius:8px 0 8px 8px;
+  max-width:75%;
+}
+.wa-link { color:#53bdeb; }
+
+/* ── STEP NUMBER ── */
+.step-num {
+  width:44px; height:44px; border-radius:50%;
+  border:1.5px solid #D4A017;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px;
+  color:#D4A017; flex-shrink:0;
+  box-shadow:0 0 16px rgba(212,160,23,.18);
+}
+
+/* ── TRANSFORMATION QUOTE ── */
+.t-quote {
+  border-left:2px solid #D4A017;
+  padding-left:24px;
+}
+
+/* ── HERO TEXT SAFETY ── */
+.hero-text-shield {
+  background: linear-gradient(
+    to bottom,
+    rgba(11,11,13,0) 0%,
+    rgba(11,11,13,.55) 20%,
+    rgba(11,11,13,.72) 100%
+  );
+  backdrop-filter:blur(0px);
+}
 </style>
 </head>
+<body class="text-on-bg font-sans overflow-x-hidden">
 
-<body class="text-on-bg font-sans min-h-screen overflow-x-hidden">
-
-<!-- ══════════════════════════════════════════
-     PÁGINA PRINCIPAL
-══════════════════════════════════════════ -->
+<!-- ══════════════════════════════════
+     MAIN PAGE
+══════════════════════════════════════ -->
 <div id="page-main">
 
-  <!-- HEADER -->
-  <header class="fixed top-0 w-full z-40 border-b border-outline-dim bg-background/90 backdrop-blur-md">
-    <div class="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between">
-      <span class="font-grotesk font-bold text-xs tracking-[.18em] text-gold uppercase">Diego Randi</span>
-      <span class="hidden sm:block text-xs font-bold tracking-[.12em] text-outline uppercase">O Caminho do Baixista Iniciante</span>
-    </div>
-  </header>
+<!-- HEADER -->
+<header class="fixed top-0 w-full z-40 border-b border-out-dim" style="background:rgba(11,11,13,.92);backdrop-filter:blur(12px);">
+  <div class="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between">
+    <span class="font-grotesk font-bold text-xs tracking-[.18em] text-gold-d uppercase">Diego Randi</span>
+    <span class="hidden sm:block text-[10px] font-bold tracking-[.13em] text-outline uppercase">O Caminho do Baixista Iniciante</span>
+  </div>
+</header>
 
-  <!-- ── HERO ── -->
-  <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-36 pb-40 max-w-5xl mx-auto overflow-hidden">
 
-    <!-- Radial hero glow -->
-    <div class="absolute inset-0 pointer-events-none -z-10 flex items-center justify-center">
-      <div style="width:720px;height:720px;background:radial-gradient(circle,rgba(212,160,23,.10) 0%,transparent 68%);border-radius:50%;"></div>
-    </div>
+<!-- ══════════════════════════════════
+     HERO
+     BG: diego-bg.jpg (B&W dramático)
+     Overlay forte para legibilidade
+     + 4 cordas SVG com glow dourado
+══════════════════════════════════════ -->
+<section class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-36 pb-28 overflow-hidden"
+         style="background-image:url('images/diego-bg.jpg');
+                background-size:cover; background-position:center 15%;">
 
-    <!-- Event chip -->
-    <div class="fade-1 inline-flex items-center gap-2.5 border border-gold/40 px-4 py-2 mb-8 text-xs font-bold tracking-[.16em] text-gold uppercase">
-      <span class="w-1.5 h-1.5 rounded-full bg-gold" style="animation:pulse 2s ease-in-out infinite;@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}"></span>
+  <!-- OVERLAY PRINCIPAL — garante contraste mínimo 7:1 na área de texto -->
+  <div class="absolute inset-0 pointer-events-none"
+       style="background:linear-gradient(180deg,
+         rgba(11,11,13,.90)  0%,
+         rgba(11,11,13,.78) 25%,
+         rgba(11,11,13,.82) 50%,
+         rgba(11,11,13,.94) 78%,
+         rgba(11,11,13,1.0) 100%
+       );"></div>
+
+  <!-- Vignette lateral -->
+  <div class="absolute inset-0 pointer-events-none"
+       style="background:radial-gradient(ellipse 85% 100% at 50% 45%, transparent 35%, rgba(11,11,13,.65) 100%);"></div>
+
+  <!-- Radial glow dourado atrás do texto -->
+  <div class="absolute pointer-events-none"
+       style="top:42%;left:50%;transform:translate(-50%,-50%);
+              width:680px;height:680px;border-radius:50%;
+              background:radial-gradient(circle,rgba(212,160,23,.09) 0%,transparent 62%);"></div>
+
+  <!-- ── 4 CORDAS (E A D G) com trastes ── -->
+  <div class="absolute inset-x-0 bottom-0 pointer-events-none" style="height:230px;">
+    <svg width="100%" height="230" viewBox="0 0 1440 230" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="gE" x="-5%" y="-300%" width="110%" height="700%">
+          <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="gA" x="-5%" y="-300%" width="110%" height="700%">
+          <feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="gD" x="-5%" y="-300%" width="110%" height="700%">
+          <feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Corda E — grave, grossa -->
+      <line x1="0" y1="72"  x2="1440" y2="72"  stroke="rgba(212,160,23,.26)" stroke-width="3.8" filter="url(#gE)"/>
+      <!-- Corda A -->
+      <line x1="0" y1="105" x2="1440" y2="105" stroke="rgba(212,160,23,.20)" stroke-width="2.8" filter="url(#gA)"/>
+      <!-- Corda D -->
+      <line x1="0" y1="138" x2="1440" y2="138" stroke="rgba(212,160,23,.14)" stroke-width="2.0" filter="url(#gD)"/>
+      <!-- Corda G — aguda, fina -->
+      <line x1="0" y1="168" x2="1440" y2="168" stroke="rgba(212,160,23,.09)" stroke-width="1.3" filter="url(#gD)"/>
+      <!-- Linhas de traste verticais -->
+      <line x1="162"  y1="50" x2="162"  y2="188" stroke="rgba(212,160,23,.07)" stroke-width="1"/>
+      <line x1="324"  y1="50" x2="324"  y2="188" stroke="rgba(212,160,23,.07)" stroke-width="1"/>
+      <line x1="486"  y1="50" x2="486"  y2="188" stroke="rgba(212,160,23,.07)" stroke-width="1"/>
+      <line x1="648"  y1="50" x2="648"  y2="188" stroke="rgba(212,160,23,.07)" stroke-width="1"/>
+      <line x1="720"  y1="48" x2="720"  y2="190" stroke="rgba(212,160,23,.14)" stroke-width="1.3"/><!-- traste 12 = oitava -->
+      <line x1="880"  y1="50" x2="880"  y2="188" stroke="rgba(212,160,23,.07)" stroke-width="1"/>
+      <line x1="1044" y1="50" x2="1044" y2="188" stroke="rgba(212,160,23,.07)" stroke-width="1"/>
+      <line x1="1200" y1="50" x2="1200" y2="188" stroke="rgba(212,160,23,.07)" stroke-width="1"/>
+      <!-- Marcadores de posição (trastes 3,5,7,9,12) -->
+      <circle cx="486"  cy="72"  r="3.5" fill="rgba(212,160,23,.38)"/>
+      <circle cx="486"  cy="105" r="3.5" fill="rgba(212,160,23,.30)"/>
+      <circle cx="648"  cy="72"  r="3.5" fill="rgba(212,160,23,.32)"/>
+      <circle cx="648"  cy="105" r="3.5" fill="rgba(212,160,23,.26)"/>
+      <!-- Oitava — dois dots *)-->
+      <circle cx="720"  cy="72"  r="4.5" fill="rgba(212,160,23,.50)"/>
+      <circle cx="720"  cy="138" r="4.5" fill="rgba(212,160,23,.44)"/>
+      <circle cx="880"  cy="72"  r="3.5" fill="rgba(212,160,23,.28)"/>
+      <circle cx="1044" cy="72"  r="3.5" fill="rgba(212,160,23,.24)"/>
+    </svg>
+  </div>
+
+  <!-- CONTENT DO HERO -->
+  <div class="relative z-10 w-full max-w-4xl mx-auto">
+
+    <!-- Chip do evento -->
+    <div class="f1 inline-flex items-center gap-2.5 border border-gold/40 px-4 py-2 mb-8 text-[11px] font-bold tracking-[.17em] text-gold uppercase"
+         style="background:rgba(11,11,13,.5);backdrop-filter:blur(6px);">
+      <span style="width:6px;height:6px;border-radius:50%;background:#f6be39;animation:pulse-dot 2s ease-in-out infinite;@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}"></span>
       Aula Ao Vivo &nbsp;·&nbsp; Gratuita &nbsp;·&nbsp; 19 de Maio &nbsp;·&nbsp; 19h
     </div>
 
-    <!-- Headline -->
-    <h1 class="fade-2 font-grotesk font-bold mb-8"
-        style="font-size:clamp(38px,6vw,72px);line-height:1.06;letter-spacing:-.03em;max-width:820px;">
+    <!-- HEADLINE com text-shadow forte -->
+    <h1 class="f2 font-grotesk font-bold mb-8"
+        style="font-size:clamp(40px,6.5vw,76px);line-height:1.05;letter-spacing:-.035em;
+               text-shadow:0 2px 32px rgba(0,0,0,.95), 0 0 80px rgba(0,0,0,.8);">
       <span class="text-on-bg">Você não precisa<br>estudar mais.</span><br>
-      <span style="color:#D4A017">Você precisa saber<br>o que estudar.</span>
+      <span style="color:#D4A017;text-shadow:0 2px 32px rgba(0,0,0,.9), 0 0 40px rgba(212,160,23,.15);">
+        Você precisa saber<br>o que estudar.
+      </span>
     </h1>
 
-    <!-- Sub -->
-    <p class="fade-3 text-on-variant leading-relaxed mb-12 max-w-xl"
-       style="font-size:clamp(15px,2vw,18px);line-height:1.75;">
-      Uma aula ao vivo e gratuita para baixistas iniciantes que já começaram a tocar, mas ainda se sentem travados, perdidos e sem clareza sobre como evoluir de verdade.
-    </p>
+    <!-- SUB com painel semi-transparente atrás -->
+    <div class="f3 mx-auto mb-12 max-w-xl"
+         style="background:rgba(11,11,13,.55);backdrop-filter:blur(6px);
+                padding:16px 20px;">
+      <p class="text-on-var" style="font-size:clamp(15px,2vw,18px);line-height:1.78;">
+        Uma aula ao vivo e gratuita para baixistas iniciantes que já começaram a tocar, mas ainda se sentem travados, perdidos e sem clareza sobre como evoluir de verdade.
+      </p>
+    </div>
 
     <!-- CTA -->
-    <button onclick="openModal()"
-      class="fade-4 glow-gold glow-gold-btn inline-flex items-center gap-3 font-bold text-[#0B0B0D] uppercase tracking-wider transition-all duration-300"
-      style="background:#D4A017;padding:16px 36px;font-size:15px;letter-spacing:.06em;">
-      Quero Garantir Minha Vaga Gratuita
-      <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
-        <path d="M2.5 8.5h12M10 4.5l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-
-    <!-- Event info card -->
-    <div class="fade-5 mt-16 w-full max-w-2xl border border-gold/30 p-8 relative overflow-hidden"
-         style="background:rgba(212,160,23,.04)">
-      <div class="absolute left-0 top-0 w-0.5 h-full" style="background:#D4A017"></div>
-      <div class="flex flex-col sm:flex-row items-center justify-around gap-8">
-        <div class="flex items-center gap-4 text-left">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" flex-shrink="0">
-            <rect x="3" y="4" width="18" height="18" rx="0"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          <div>
-            <div class="text-xs font-bold tracking-[.15em] text-on-variant uppercase mb-0.5">Data &amp; Hora</div>
-            <div class="font-grotesk font-bold text-lg text-on-bg">19 de Maio · 19h</div>
-          </div>
-        </div>
-        <div class="hidden sm:block w-px h-10 bg-outline-dim"></div>
-        <div class="flex items-center gap-4 text-left">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="0"/>
-          </svg>
-          <div>
-            <div class="text-xs font-bold tracking-[.15em] text-on-variant uppercase mb-0.5">Formato</div>
-            <div class="font-grotesk font-bold text-lg text-on-bg">Ao Vivo no YouTube</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STRING DIVIDER -->
-  <div class="strings"><span></span><span></span><span></span><span></span><span></span></div>
-
-  <!-- ── O QUE VOCÊ VAI APRENDER ── -->
-  <section class="py-40 px-6 max-w-5xl mx-auto">
-    <div class="text-xs font-bold tracking-[.16em] text-gold uppercase text-center mb-4">Conteúdo da aula</div>
-    <h2 class="font-grotesk font-bold text-center mb-16"
-        style="font-size:clamp(26px,4vw,44px);line-height:1.15;letter-spacing:-.02em;">
-      O que você vai descobrir nessa aula:
-    </h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-      <div class="card-bar relative bg-surface-low border border-outline-dim p-8 overflow-hidden group cursor-default">
-        <div class="flex items-start gap-5">
-          <span class="glow-dot w-3.5 h-3.5 rounded-full flex-shrink-0 mt-1.5" style="background:#D4A017;min-width:14px;min-height:14px;"></span>
-          <div>
-            <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">A Armadilha do Iniciante</h3>
-            <p class="text-on-variant leading-relaxed text-sm" style="line-height:1.7">Por que a maioria dos baixistas iniciantes fica em círculos mesmo estudando — e o que muda quando você tem um caminho claro.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-bar relative bg-surface-low border border-outline-dim p-8 overflow-hidden group cursor-default">
-        <div class="flex items-start gap-5">
-          <span class="glow-dot w-3.5 h-3.5 rounded-full flex-shrink-0 mt-1.5" style="background:#D4A017;min-width:14px;min-height:14px;"></span>
-          <div>
-            <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">Fundamentos de Aço</h3>
-            <p class="text-on-variant leading-relaxed text-sm" style="line-height:1.7">Quais fundamentos realmente constroem sua base no instrumento — e o que não priorizar por enquanto.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-bar relative bg-surface-low border border-outline-dim p-8 overflow-hidden group cursor-default">
-        <div class="flex items-start gap-5">
-          <span class="glow-dot w-3.5 h-3.5 rounded-full flex-shrink-0 mt-1.5" style="background:#D4A017;min-width:14px;min-height:14px;"></span>
-          <div>
-            <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">Rotina que Evolui</h3>
-            <p class="text-on-variant leading-relaxed text-sm" style="line-height:1.7">Como organizar uma rotina de estudos simples e objetiva — sem depender de vídeos aleatórios do YouTube.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-bar relative bg-surface-low border border-outline-dim p-8 overflow-hidden group cursor-default">
-        <div class="flex items-start gap-5">
-          <span class="glow-dot w-3.5 h-3.5 rounded-full flex-shrink-0 mt-1.5" style="background:#D4A017;min-width:14px;min-height:14px;"></span>
-          <div>
-            <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">O Próximo Passo Concreto</h3>
-            <p class="text-on-variant leading-relaxed text-sm" style="line-height:1.7">Sair da aula sabendo exatamente o que fazer quando pegar o baixo no dia seguinte.</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- STRING DIVIDER -->
-  <div class="strings"><span></span><span></span><span></span><span></span><span></span></div>
-
-  <!-- ── SOBRE O DIEGO ── -->
-  <section class="relative py-40 px-6 border-y border-outline-dim overflow-hidden"
-           style="background:rgba(26,28,28,.55)">
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-transparent pointer-events-none"></div>
-    <div class="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-
-      <!-- Photo -->
-      <div class="photo-placeholder aspect-[3/4] relative border border-outline-dim overflow-hidden flex items-end justify-center">
-        <!-- Substitua por: <img src="diego.jpg" alt="Diego Randi" class="w-full h-full object-cover"> -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 select-none">
-          <div class="w-16 h-16 rounded-full border border-gold/40 flex items-center justify-center">
-            <span class="font-grotesk font-bold text-xl" style="color:#D4A017">DR</span>
-          </div>
-          <span class="text-xs tracking-[.15em] text-outline uppercase">Foto do Diego</span>
-        </div>
-        <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent"></div>
-        <div class="relative z-10 pb-6 text-center">
-          <div class="text-xs font-bold tracking-[.14em] text-gold uppercase">Diego Randi</div>
-        </div>
-      </div>
-
-      <!-- Bio -->
-      <div>
-        <div class="text-xs font-bold tracking-[.16em] text-gold uppercase mb-5">Quem vai apresentar</div>
-        <h2 class="font-grotesk font-bold mb-3" style="font-size:clamp(28px,4vw,44px);line-height:1.15;letter-spacing:-.02em;">
-          Diego Randi
-        </h2>
-        <div class="w-12 h-0.5 mb-8" style="background:#D4A017"></div>
-        <p class="text-on-variant leading-relaxed mb-6" style="font-size:17px;line-height:1.75;">
-          Com mais de 20 anos de experiência nos palcos e nos estúdios, Diego Randi dedicou sua vida a decodificar os segredos da técnica e da musicalidade no contrabaixo.
-        </p>
-        <p class="text-on-variant leading-relaxed" style="font-size:17px;line-height:1.75;">
-          Sua metodologia não se baseia em atalhos ilusórios, mas na construção sólida de fundamentos. Ele já guiou centenas de alunos — ajudando-os a transformar a confusão do estudo autodidata em clareza e evolução real.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- STRING DIVIDER -->
-  <div class="strings"><span></span><span></span><span></span><span></span><span></span></div>
-
-  <!-- ── CTA FINAL ── -->
-  <section class="relative py-40 px-6 text-center flex flex-col items-center overflow-hidden">
-
-    <!-- Radial glow -->
-    <div class="absolute inset-0 pointer-events-none -z-10 flex items-center justify-center">
-      <div style="width:600px;height:600px;background:radial-gradient(circle,rgba(212,160,23,.08) 0%,transparent 70%);border-radius:50%;"></div>
+    <div class="f4">
+      <button onclick="openModal()" class="btn-gold inline-flex items-center gap-3"
+              style="padding:17px 42px;font-size:15px;">
+        Quero Garantir Minha Vaga Gratuita
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2 8h12M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
 
-    <div class="text-xs font-bold tracking-[.18em] text-gold uppercase mb-4">
-      ⚡ As vagas são limitadas
-    </div>
-    <h2 class="font-grotesk font-bold mb-6 max-w-2xl"
-        style="font-size:clamp(28px,4.5vw,52px);line-height:1.1;letter-spacing:-.025em;">
-      Garanta seu lugar na primeira fila.
-    </h2>
-    <p class="text-on-variant mb-12 max-w-md" style="font-size:17px;line-height:1.7;">
-      O link da aula será enviado exclusivamente pelo WhatsApp.
-    </p>
+    <!-- PROVA SOCIAL + INFO DO EVENTO -->
+    <div class="f5 mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
 
-    <button onclick="openModal()"
-      class="glow-gold glow-gold-btn inline-flex items-center gap-3 font-bold text-[#0B0B0D] uppercase tracking-wider transition-all duration-300"
-      style="background:#D4A017;padding:18px 48px;font-size:15px;letter-spacing:.06em;">
-      Quero Minha Vaga Gratuita
-      <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
-        <path d="M2.5 8.5h12M10 4.5l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-  </section>
+      <!-- Social proof -->
+      <div class="flex items-center gap-3 border border-out-dim px-5 py-3"
+           style="background:rgba(11,11,13,.6);backdrop-filter:blur(4px);">
+        <div class="flex -space-x-2">
+          <div class="w-7 h-7 rounded-full border border-bg flex items-center justify-center text-[10px]" style="background:#1a1c1c;">🎸</div>
+          <div class="w-7 h-7 rounded-full border border-bg flex items-center justify-center text-[10px]" style="background:#222;">🎵</div>
+          <div class="w-7 h-7 rounded-full border border-bg flex items-center justify-center text-[10px]" style="background:#1a1c1c;">🎼</div>
+        </div>
+        <span class="text-on-var text-xs"><span class="text-on-bg font-bold">+340</span> baixistas já garantiram vaga</span>
+      </div>
 
-  <!-- FOOTER -->
-  <footer class="border-t border-outline-dim py-10 px-6" style="background:#0c0f0f">
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-      <span class="font-grotesk font-bold text-xs tracking-[.18em] text-gold uppercase">Diego Randi</span>
-      <span class="text-xs text-outline tracking-wider">© 2026 — Todos os direitos reservados</span>
-    </div>
-  </footer>
+      <!-- Divider vertical -->
+      <div class="hidden sm:block w-px h-8 bg-out-dim"></div>
 
-</div>
-<!-- ══ END MAIN PAGE ══ -->
-
-
-<!-- ══════════════════════════════════════════
-     PÁGINA DE CONFIRMAÇÃO
-══════════════════════════════════════════ -->
-<div id="page-confirm"
-     class="fixed inset-0 z-200 flex-col items-center justify-center text-center px-6 py-20 overflow-y-auto"
-     style="background:#0B0B0D;background-image:url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E\");">
-
-  <div class="relative flex items-center justify-center mx-auto mb-10" style="width:80px;height:80px;">
-    <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(212,160,23,.18),transparent 70%)"></div>
-    <div class="border border-gold/50 flex items-center justify-center" style="width:72px;height:72px;border-radius:50%;">
-      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-        <path d="M5 15L11.5 22L25 8" stroke="#D4A017" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <!-- Data/hora -->
+      <div class="flex items-center gap-3 border border-gold/25 px-5 py-3"
+           style="background:rgba(212,160,23,.04);backdrop-filter:blur(4px);">
+        <div class="absolute left-0 top-0 w-0.5 h-full" style="background:#D4A017;"></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round">
+          <rect x="3" y="4" width="18" height="18" rx="0"/><line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span class="font-grotesk font-bold text-sm text-on-bg">19 de Maio · 19h · Ao vivo no YouTube</span>
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="text-xs font-bold tracking-[.18em] text-gold uppercase mb-5">Cadastro Confirmado</div>
 
-  <h1 class="font-grotesk font-bold mb-5 max-w-xl mx-auto"
-      style="font-size:clamp(32px,5vw,52px);line-height:1.08;letter-spacing:-.025em;">
-    Agora você está dentro.
-  </h1>
-
-  <p class="text-on-variant mb-3 max-w-md mx-auto" style="font-size:17px;line-height:1.75;">
-    Entre no grupo oficial do evento para receber o link da aula no dia 19.
-  </p>
-  <p class="text-outline mb-12 max-w-sm mx-auto" style="font-size:15px;line-height:1.7;">
-    O link chega pelo WhatsApp antes das 19h do dia 19 de maio. Entre agora:
-  </p>
-
-  <a href="https://chat.whatsapp.com/Jk5RXA1CgZCBk7FUbaWLHX"
-     target="_blank" rel="noopener noreferrer"
-     class="glow-gold-btn inline-flex items-center gap-3 font-bold text-white uppercase tracking-wider transition-all duration-300"
-     style="background:#25D366;padding:18px 40px;font-size:15px;letter-spacing:.06em;">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
-    Entrar no Grupo Oficial do WhatsApp
-  </a>
-
-  <p class="mt-8 text-xs tracking-wider text-outline">
-    Fique atento às mensagens do grupo. O link chega por lá.
-  </p>
-
+<!-- WAVE DIVIDER 1 -->
+<div class="wave-wrap">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" width="100%" height="80" style="display:block;">
+    <path d="M0,40 C240,6 480,74 720,40 C960,6 1200,74 1440,40"
+          stroke="rgba(212,160,23,.28)" stroke-width="1.5" fill="none"/>
+    <path d="M0,40 C160,12 320,68 480,40 C640,12 800,68 960,40 C1120,12 1280,68 1440,40"
+          stroke="rgba(212,160,23,.12)" stroke-width="1" fill="none"/>
+    <line x1="0" y1="40" x2="1440" y2="40" stroke="rgba(155,143,122,.10)" stroke-width=".5"/>
+  </svg>
 </div>
-<!-- ══ END CONFIRM ══ -->
 
 
-<!-- ══════════════════════════════════════════
-     MODAL — FORMULÁRIO
-══════════════════════════════════════════ -->
-<div id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div id="modal-box"
-       class="relative w-full border border-outline-dim"
-       style="max-width:420px;background:#0f1010;padding:44px 40px;">
+<!-- ══════════════════════════════════
+     COMO FUNCIONA
+     UX: claridade do mecanismo
+     + Phone mockup WhatsApp
+══════════════════════════════════════ -->
+<section class="relative py-36 px-6 overflow-hidden"
+         style="
+           background-color: #0D1014;
+           background-image:
+             radial-gradient(ellipse 65% 80% at 78% 48%, rgba(212,160,23,.075) 0%, transparent 100%),
+             radial-gradient(ellipse 40% 50% at 15% 85%, rgba(37,211,102,.03) 0%, transparent 100%),
+             repeating-linear-gradient(
+               135deg,
+               rgba(212,160,23,.020) 0px, rgba(212,160,23,.020) 1px,
+               transparent 1px, transparent 38px
+             );
+         ">
+  <div class="max-w-5xl mx-auto">
 
-    <!-- Close -->
-    <button onclick="closeModal()" aria-label="Fechar"
-            class="absolute top-4 right-4 text-outline hover:text-on-bg transition-colors text-2xl leading-none font-light">
-      ×
+    <div class="text-[11px] font-bold tracking-[.18em] text-gold-d uppercase text-center mb-3">É simples</div>
+    <h2 class="font-grotesk font-bold text-center mb-20"
+        style="font-size:clamp(26px,4vw,44px);line-height:1.12;letter-spacing:-.022em;">
+      Como funciona:
+    </h2>
+
+    <div class="flex flex-col md:flex-row items-center gap-16 md:gap-20">
+
+      <!-- STEPS (esquerda) -->
+      <div class="flex-1 space-y-12">
+
+        <div class="flex items-start gap-6">
+          <div class="step-num">1</div>
+          <div>
+            <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">Faça o cadastro</h3>
+            <p class="text-on-var text-sm leading-relaxed" style="line-height:1.72">
+              Clique no botão, preencha seu nome, e-mail e número de WhatsApp. Leva menos de 30 segundos.
+            </p>
+          </div>
+        </div>
+
+        <!-- Connector line -->
+        <div class="ml-5 w-px h-4 bg-out-dim"></div>
+
+        <div class="flex items-start gap-6">
+          <div class="step-num">2</div>
+          <div>
+            <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">Entre no grupo oficial</h3>
+            <p class="text-on-var text-sm leading-relaxed" style="line-height:1.72">
+              Você é direcionado ao grupo do WhatsApp do evento. É lá que o Diego envia o link da aula ao vivo no dia 19.
+            </p>
+          </div>
+        </div>
+
+        <div class="ml-5 w-px h-4 bg-out-dim"></div>
+
+        <div class="flex items-start gap-6">
+          <div class="step-num">3</div>
+          <div>
+            <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">Assista ao vivo</h3>
+            <p class="text-on-var text-sm leading-relaxed" style="line-height:1.72">
+              No dia 19 de maio, às 19h, o link chega no grupo. Você assiste ao vivo pelo YouTube, de onde estiver, sem pagar nada.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PHONE MOCKUP (direita) -->
+      <div class="flex-shrink-0 relative flex items-center justify-center">
+
+        <!-- Glow atrás do phone -->
+        <div class="absolute pointer-events-none"
+             style="width:320px;height:320px;border-radius:50%;
+                    background:radial-gradient(circle,rgba(37,211,102,.07) 0%,rgba(212,160,23,.06) 40%,transparent 70%);"></div>
+
+        <div class="phone-shell">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+
+            <!-- WA Header -->
+            <div class="wa-header">
+              <div class="wa-avatar">🎸</div>
+              <div>
+                <div class="wa-name">Baixista Iniciante — Evento</div>
+                <div class="wa-count">340 participantes</div>
+              </div>
+            </div>
+
+            <!-- WA Messages -->
+            <div class="wa-body">
+
+              <div>
+                <div class="wa-msg-name">Diego Randi</div>
+                <div class="wa-msg">
+                  Pessoal, bem-vindos ao grupo oficial! 🎸 A aula começa hoje às 19h.
+                </div>
+                <div class="wa-time">18:30</div>
+              </div>
+
+              <div>
+                <div class="wa-msg-name">Diego Randi</div>
+                <div class="wa-msg">
+                  🔴 Ao vivo em 10 minutos!<br>
+                  Aqui está o link:<br>
+                  <span class="wa-link">youtube.com/live/caminho...</span>
+                </div>
+                <div class="wa-time">18:50 ✓✓</div>
+              </div>
+
+              <div class="wa-msg-out">Obrigado Diego! 🙏</div>
+              <div class="wa-msg-out">Já tô abrindo 🎵</div>
+
+              <div>
+                <div class="wa-msg-name">Diego Randi</div>
+                <div class="wa-msg">
+                  Começando agora! Boa aula pra todos! 🚀
+                </div>
+                <div class="wa-time">19:00 ✓✓</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- STRING DIVIDER -->
+<div class="str-div"><span></span><span></span><span></span><span></span><span></span></div>
+
+
+<!-- ══════════════════════════════════
+     O QUE VOCÊ VAI APRENDER
+══════════════════════════════════════ -->
+<section class="relative py-36 overflow-hidden"
+         style="
+           background-color: #0C0D11;
+           background-image:
+             radial-gradient(ellipse 60% 65% at 50% 55%, rgba(212,160,23,.058) 0%, transparent 100%),
+             radial-gradient(ellipse 30% 35% at 85% 20%, rgba(212,160,23,.03) 0%, transparent 100%),
+             linear-gradient(rgba(212,160,23,.020) 1px, transparent 1px),
+             linear-gradient(90deg, rgba(212,160,23,.014) 1px, transparent 1px);
+           background-size: auto, auto, 44px 44px, 44px 44px;
+         ">
+<div class="px-6 max-w-5xl mx-auto">
+
+  <div class="text-[11px] font-bold tracking-[.18em] text-gold-d uppercase text-center mb-3">Conteúdo da aula</div>
+  <h2 class="font-grotesk font-bold text-center mb-16"
+      style="font-size:clamp(26px,4vw,44px);line-height:1.12;letter-spacing:-.022em;">
+    O que você vai descobrir nessa aula:
+  </h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+    <div class="c-bar bg-s-low border border-out-dim p-8 cursor-default">
+      <div class="flex items-start gap-5">
+        <span class="gdot mt-1.5" style="width:13px;height:13px;min-width:13px;"></span>
+        <div>
+          <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">A Armadilha do Iniciante</h3>
+          <p class="text-on-var text-sm" style="line-height:1.75">
+            Por que a maioria dos baixistas iniciantes fica em círculos mesmo estudando — e o que muda quando você tem um caminho claro.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="c-bar bg-s-low border border-out-dim p-8 cursor-default">
+      <div class="flex items-start gap-5">
+        <span class="gdot mt-1.5" style="width:13px;height:13px;min-width:13px;"></span>
+        <div>
+          <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">Fundamentos de Aço</h3>
+          <p class="text-on-var text-sm" style="line-height:1.75">
+            Quais fundamentos realmente constroem sua base no instrumento — e o que não priorizar por enquanto.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="c-bar bg-s-low border border-out-dim p-8 cursor-default">
+      <div class="flex items-start gap-5">
+        <span class="gdot mt-1.5" style="width:13px;height:13px;min-width:13px;"></span>
+        <div>
+          <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">Rotina que Evolui</h3>
+          <p class="text-on-var text-sm" style="line-height:1.75">
+            Como organizar uma rotina de estudos simples e objetiva — sem depender de vídeos aleatórios do YouTube.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="c-bar bg-s-low border border-out-dim p-8 cursor-default">
+      <div class="flex items-start gap-5">
+        <span class="gdot mt-1.5" style="width:13px;height:13px;min-width:13px;"></span>
+        <div>
+          <h3 class="font-grotesk font-bold text-lg text-on-bg mb-2">O Próximo Passo Concreto</h3>
+          <p class="text-on-var text-sm" style="line-height:1.75">
+            Sair da aula sabendo exatamente o que fazer quando pegar o baixo no dia seguinte.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div><!-- /max-w wrapper -->
+</section>
+
+
+<!-- WAVE DIVIDER 2 -->
+<div class="wave-wrap">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" width="100%" height="80" style="display:block;">
+    <path d="M0,40 C360,74 720,6 1080,40 C1260,57 1380,30 1440,40"
+          stroke="rgba(212,160,23,.20)" stroke-width="1.5" fill="none"/>
+    <path d="M0,40 C200,14 440,66 720,40 C1000,14 1240,66 1440,40"
+          stroke="rgba(212,160,23,.09)" stroke-width="1" fill="none"/>
+    <line x1="0" y1="40" x2="1440" y2="40" stroke="rgba(155,143,122,.08)" stroke-width=".5"/>
+  </svg>
+</div>
+
+
+<!-- ══════════════════════════════════
+     SOBRE O DIEGO
+     foto-diego.jpg full-bleed esquerda
+══════════════════════════════════════ -->
+<section class="relative w-full border-y border-out-dim overflow-hidden"
+         style="min-height:85vh; background:#0B0B0D;">
+
+  <div class="flex flex-col md:flex-row" style="min-height:85vh;">
+
+    <!-- FOTO (sangra à borda esquerda) -->
+    <div class="relative md:w-1/2 flex-shrink-0 overflow-hidden" style="min-height:400px; background:#0c0e0e;">
+      <img src="images/foto-diego.jpg" alt="Diego Randi tocando ao vivo"
+           class="about-img absolute inset-0">
+      <!-- Fade para o lado direito no desktop -->
+      <div class="absolute inset-0 pointer-events-none hidden md:block"
+           style="background:linear-gradient(to right,rgba(11,11,13,0) 28%,rgba(11,11,13,.75) 68%,rgba(11,11,13,1) 100%);"></div>
+      <!-- Fade para baixo no mobile -->
+      <div class="absolute inset-x-0 bottom-0 pointer-events-none md:hidden"
+           style="height:100px;background:linear-gradient(to top,#0B0B0D,transparent);"></div>
+      <!-- Accent line esquerda -->
+      <div class="absolute top-0 left-0 w-0.5 h-full" style="background:#D4A017;opacity:.55;"></div>
+    </div>
+
+    <!-- BIO (coluna direita) -->
+    <div class="relative z-10 md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-20 py-20">
+      <div class="text-[11px] font-bold tracking-[.18em] text-gold-d uppercase mb-5">Quem vai apresentar</div>
+      <h2 class="font-grotesk font-bold mb-4"
+          style="font-size:clamp(34px,4.5vw,52px);line-height:1.08;letter-spacing:-.028em;">
+        Diego Randi
+      </h2>
+      <div class="mb-8" style="width:48px;height:2px;background:#D4A017;"></div>
+      <p class="text-on-var mb-6" style="font-size:17px;line-height:1.78;">
+        Com mais de 20 anos de experiência nos palcos e nos estúdios, Diego Randi dedicou sua vida a decodificar os segredos da técnica e da musicalidade no contrabaixo.
+      </p>
+      <p class="text-on-var" style="font-size:17px;line-height:1.78;">
+        Sua metodologia não se baseia em atalhos ilusórios, mas na construção sólida de fundamentos. Ele já guiou centenas de alunos — ajudando-os a transformar a confusão do estudo autodidata em clareza e evolução real no instrumento.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- STRING DIVIDER -->
+<div class="str-div"><span></span><span></span><span></span><span></span><span></span></div>
+
+
+<!-- ══════════════════════════════════
+     TRANSFORMAÇÃO (Emily Heyward)
+     "Functional → Emotional ladder"
+     O baixista não quer informação.
+     Quer TOCAR DE VERDADE.
+══════════════════════════════════════ -->
+<section class="relative py-44 px-6 overflow-hidden"
+         style="
+           background-color: #080909;
+           background-image:
+             radial-gradient(ellipse 100% 55% at 50% -4%, rgba(212,160,23,.14) 0%, rgba(212,160,23,.04) 45%, transparent 100%),
+             radial-gradient(ellipse 35% 45% at 50% 58%, rgba(212,160,23,.035) 0%, transparent 100%),
+             repeating-linear-gradient(
+               0deg,
+               rgba(255,255,255,.007) 0px, rgba(255,255,255,.007) 1px,
+               transparent 1px, transparent 5px
+             );
+         ">
+
+  <!-- Linha de luz dourada no topo — efeito barra de palco -->
+  <div class="absolute top-0 inset-x-0 pointer-events-none"
+       style="height:1px;background:linear-gradient(to right,transparent 0%,rgba(212,160,23,.35) 30%,rgba(212,160,23,.55) 50%,rgba(212,160,23,.35) 70%,transparent 100%);"></div>
+  <!-- Linha de luz dourada na base -->
+  <div class="absolute bottom-0 inset-x-0 pointer-events-none"
+       style="height:1px;background:linear-gradient(to right,transparent 0%,rgba(212,160,23,.18) 30%,rgba(212,160,23,.28) 50%,rgba(212,160,23,.18) 70%,transparent 100%);"></div>
+
+  <div class="relative z-10 max-w-3xl mx-auto">
+
+    <div class="t-quote">
+      <p class="font-grotesk font-bold text-on-bg"
+         style="font-size:clamp(22px,3.5vw,36px);line-height:1.22;letter-spacing:-.022em;
+                text-shadow:0 2px 40px rgba(0,0,0,.8);">
+        "Você vai sair dessa aula sabendo exatamente o que fazer na próxima vez que pegar o baixo. Não mais abrindo vídeo aleatório. Não mais sem saber o que praticar. Com um caminho."
+      </p>
+      <div class="mt-8 flex items-center gap-3">
+        <span class="gdot" style="width:10px;height:10px;"></span>
+        <span class="text-xs font-bold tracking-[.15em] text-gold-d uppercase">Diego Randi</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- STRING DIVIDER -->
+<div class="str-div"><span></span><span></span><span></span><span></span><span></span></div>
+
+
+<!-- ══════════════════════════════════
+     CTA FINAL
+     BG: diego-bg.jpg ghosted + glow
+     + 2 cordas decorativas
+══════════════════════════════════════ -->
+<section class="relative py-40 px-6 text-center flex flex-col items-center overflow-hidden">
+
+  <!-- Foto de fundo muito escura -->
+  <div class="absolute inset-0 pointer-events-none"
+       style="background-image:url('images/diego-bg.jpg');
+              background-size:cover; background-position:center 25%;
+              opacity:.07;"></div>
+  <div class="absolute inset-0 pointer-events-none" style="background:rgba(11,11,13,.90);"></div>
+
+  <!-- Radial glow -->
+  <div class="absolute pointer-events-none"
+       style="top:50%;left:50%;transform:translate(-50%,-50%);
+              width:700px;height:700px;border-radius:50%;
+              background:radial-gradient(circle,rgba(212,160,23,.10) 0%,transparent 65%);"></div>
+
+  <!-- Cordas decorativas base -->
+  <div class="absolute inset-x-0 bottom-0 pointer-events-none" style="height:130px;opacity:.45;">
+    <svg width="100%" height="130" viewBox="0 0 1440 130" preserveAspectRatio="none">
+      <line x1="0" y1="60"  x2="1440" y2="60"  stroke="rgba(212,160,23,.20)" stroke-width="3"/>
+      <line x1="0" y1="90"  x2="1440" y2="90"  stroke="rgba(212,160,23,.13)" stroke-width="2"/>
+      <line x1="0" y1="115" x2="1440" y2="115" stroke="rgba(212,160,23,.08)" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <div class="relative z-10 flex flex-col items-center">
+    <div class="text-[11px] font-bold tracking-[.18em] text-gold-d uppercase mb-4">⚡ As vagas são limitadas</div>
+    <h2 class="font-grotesk font-bold mb-5 max-w-2xl"
+        style="font-size:clamp(30px,5vw,58px);line-height:1.06;letter-spacing:-.028em;">
+      Garanta seu lugar na primeira fila.
+    </h2>
+    <p class="text-on-var mb-4 max-w-md" style="font-size:17px;line-height:1.72;">
+      O link da aula será enviado exclusivamente pelo WhatsApp.
+    </p>
+    <p class="text-outline text-sm mb-12 flex items-center gap-2">
+      <span class="gdot" style="width:8px;height:8px;"></span>
+      +340 baixistas já garantiram vaga
+    </p>
+    <button onclick="openModal()" class="btn-gold inline-flex items-center gap-3"
+            style="padding:18px 54px;font-size:15px;">
+      Quero Minha Vaga Gratuita
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 8h12M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </button>
+  </div>
+</section>
 
-    <div class="text-xs font-bold tracking-[.16em] text-gold uppercase mb-3">Garanta sua vaga</div>
-    <h2 id="modal-title" class="font-grotesk font-bold mb-8" style="font-size:22px;line-height:1.2;letter-spacing:-.02em;">
+
+<!-- FOOTER -->
+<footer class="border-t border-out-dim py-10 px-6" style="background:#09090b;">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+    <span class="font-grotesk font-bold text-xs tracking-[.18em] text-gold-d uppercase">Diego Randi</span>
+    <span class="text-xs text-outline tracking-wider">© 2026 — Todos os direitos reservados</span>
+  </div>
+</footer>
+
+</div><!-- /#page-main -->
+
+
+<!-- ══════════════════════════════════
+     CONFIRMAÇÃO
+══════════════════════════════════════ -->
+<div id="page-confirm"
+     class="fixed inset-0 z-200 flex-col items-center justify-center text-center px-6 py-20 overflow-y-auto"
+     style="background:#0B0B0D;">
+
+  <!-- BG foto escura -->
+  <div class="absolute inset-0 pointer-events-none"
+       style="background-image:url('images/diego-bg.jpg');
+              background-size:cover; background-position:center 20%;opacity:.07;"></div>
+  <div class="absolute inset-0 pointer-events-none" style="background:rgba(11,11,13,.93);"></div>
+
+  <!-- Cordas base -->
+  <div class="absolute inset-x-0 bottom-0 pointer-events-none" style="height:130px;opacity:.4;">
+    <svg width="100%" height="130" viewBox="0 0 1440 130" preserveAspectRatio="none">
+      <line x1="0" y1="60"  x2="1440" y2="60"  stroke="rgba(212,160,23,.20)" stroke-width="3"/>
+      <line x1="0" y1="88"  x2="1440" y2="88"  stroke="rgba(212,160,23,.12)" stroke-width="2"/>
+      <line x1="0" y1="112" x2="1440" y2="112" stroke="rgba(212,160,23,.07)" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <div class="relative z-10 flex flex-col items-center">
+    <div class="mb-10 relative flex items-center justify-center" style="width:76px;height:76px;">
+      <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(212,160,23,.20),transparent 70%);"></div>
+      <div class="border border-gold/50 flex items-center justify-center" style="width:72px;height:72px;border-radius:50%;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M4 14L10.5 21L24 7" stroke="#D4A017" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="text-[11px] font-bold tracking-[.18em] text-gold-d uppercase mb-5">Cadastro Confirmado</div>
+    <h1 class="font-grotesk font-bold mb-5 max-w-lg"
+        style="font-size:clamp(32px,5vw,52px);line-height:1.07;letter-spacing:-.028em;">
+      Agora você está dentro.
+    </h1>
+    <p class="text-on-var mb-3 max-w-md" style="font-size:17px;line-height:1.75;">
+      Entre no grupo oficial do evento para receber o link da aula no dia 19.
+    </p>
+    <p class="text-outline mb-12 max-w-sm" style="font-size:15px;line-height:1.7;">
+      O link chega pelo WhatsApp antes das 19h do dia 19 de maio.
+    </p>
+    <a href="https://chat.whatsapp.com/Jk5RXA1CgZCBk7FUbaWLHX"
+       target="_blank" rel="noopener noreferrer"
+       class="inline-flex items-center gap-3 font-bold text-white uppercase tracking-wider transition-all duration-300"
+       style="background:#25D366;padding:18px 40px;font-size:14px;letter-spacing:.06em;
+              box-shadow:0 0 40px rgba(37,211,102,.22);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Entrar no Grupo Oficial do WhatsApp
+    </a>
+    <p class="mt-8 text-xs tracking-wider text-outline">Fique atento às mensagens do grupo. O link chega por lá.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     MODAL
+══════════════════════════════════════ -->
+<div id="modal-wrap" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div id="modal-box" class="relative w-full border border-out-dim"
+       style="max-width:420px;background:#0d0e0e;padding:44px 38px;">
+
+    <button onclick="closeModal()" aria-label="Fechar"
+            style="position:absolute;top:14px;right:16px;background:none;border:none;
+                   color:#9b8f7a;font-size:26px;line-height:1;cursor:pointer;padding:4px 6px;
+                   transition:color .15s;"
+            onmouseover="this.style.color='#e2e2e2'" onmouseout="this.style.color='#9b8f7a'">×</button>
+
+    <div class="text-[11px] font-bold tracking-[.17em] text-gold-d uppercase mb-3">Garanta sua vaga</div>
+    <h2 id="mt" class="font-grotesk font-bold mb-8"
+        style="font-size:22px;line-height:1.2;letter-spacing:-.02em;color:#e2e2e2;">
       Aula Gratuita<br>19 de Maio · 19h
     </h2>
 
     <form id="reg-form" novalidate>
-
       <div class="mb-7">
-        <label class="block text-xs font-bold tracking-[.1em] text-outline uppercase mb-2" for="f-name">Nome</label>
-        <input class="input-line" type="text" id="f-name" name="nome" placeholder="Seu nome completo" autocomplete="name" required>
+        <label class="block text-[11px] font-bold tracking-[.1em] text-outline uppercase mb-2" for="fn">Nome</label>
+        <input class="input-line" type="text" id="fn" name="nome" placeholder="Seu nome completo" autocomplete="name" required>
       </div>
-
       <div class="mb-7">
-        <label class="block text-xs font-bold tracking-[.1em] text-outline uppercase mb-2" for="f-email">E-mail</label>
-        <input class="input-line" type="email" id="f-email" name="email" placeholder="seu@email.com" autocomplete="email" required>
+        <label class="block text-[11px] font-bold tracking-[.1em] text-outline uppercase mb-2" for="fe">E-mail</label>
+        <input class="input-line" type="email" id="fe" name="email" placeholder="seu@email.com" autocomplete="email" required>
       </div>
-
       <div class="mb-9">
-        <label class="block text-xs font-bold tracking-[.1em] text-outline uppercase mb-2" for="f-phone">WhatsApp</label>
-        <input class="input-line" type="tel" id="f-phone" name="whatsapp" placeholder="(11) 99999-9999" autocomplete="tel" required>
+        <label class="block text-[11px] font-bold tracking-[.1em] text-outline uppercase mb-2" for="fp">WhatsApp</label>
+        <input class="input-line" type="tel" id="fp" name="whatsapp" placeholder="(11) 99999-9999" autocomplete="tel" required>
       </div>
-
-      <button type="submit"
-              class="w-full glow-gold glow-gold-btn font-bold text-[#0B0B0D] uppercase tracking-wider transition-all duration-300"
-              style="background:#D4A017;padding:15px;font-size:14px;letter-spacing:.07em;">
+      <button type="submit" class="btn-gold w-full" style="padding:15px;font-size:14px;">
         Garantir Minha Vaga →
       </button>
-
-      <p class="mt-4 text-center text-outline" style="font-size:11px;">
-        Seus dados estão seguros. Sem spam.
-      </p>
-
+      <p class="mt-4 text-center text-outline" style="font-size:11px;">Seus dados estão seguros. Sem spam.</p>
     </form>
   </div>
 </div>
-<!-- ══ END MODAL ══ -->
 
 
 <script>
-  /* ── MODAL ── */
-  const overlay = document.getElementById('modal-overlay');
+/* MODAL */
+const mw = document.getElementById('modal-wrap');
+function openModal() {
+  mw.classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('fn').focus(),280);
+}
+function closeModal() {
+  mw.classList.remove('open');
+  document.body.style.overflow='';
+}
+mw.addEventListener('click',e=>{if(e.target===mw)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mw.classList.contains('open'))closeModal();});
 
-  function openModal() {
-    overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => document.getElementById('f-name').focus(), 280);
-  }
+/* PHONE MASK */
+document.getElementById('fp').addEventListener('input',function(e){
+  let v=e.target.value.replace(/\D/g,'').substring(0,11);
+  if(v.length>10)     v='('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+  else if(v.length>6) v='('+v.slice(0,2)+') '+v.slice(2,6)+'-'+v.slice(6);
+  else if(v.length>2) v='('+v.slice(0,2)+') '+v.slice(2);
+  e.target.value=v;
+});
 
-  function closeModal() {
-    overlay.classList.remove('open');
-    document.body.style.overflow = '';
-  }
+/* SUBMIT */
+document.getElementById('reg-form').addEventListener('submit',function(e){
+  e.preventDefault();
+  const name=document.getElementById('fn').value.trim();
+  const email=document.getElementById('fe').value.trim();
+  const phone=document.getElementById('fp').value.trim();
+  if(!name||!email||!phone)return;
+  // Integre aqui: fetch('/api/register',{method:'POST',body:JSON.stringify({name,email,phone})})
+  closeModal();
+  document.getElementById('page-main').style.display='none';
+  const c=document.getElementById('page-confirm');
+  c.classList.add('show');
+  window.scrollTo({top:0,behavior:'instant'});
+});
 
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
-
-  /* ── PHONE MASK ── */
-  document.getElementById('f-phone').addEventListener('input', function(e) {
-    let v = e.target.value.replace(/\D/g, '').substring(0, 11);
-    if (v.length > 10)      v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
-    else if (v.length > 6)  v = '(' + v.slice(0,2) + ') ' + v.slice(2,6) + '-' + v.slice(6);
-    else if (v.length > 2)  v = '(' + v.slice(0,2) + ') ' + v.slice(2);
-    e.target.value = v;
-  });
-
-  /* ── SUBMIT ── */
-  document.getElementById('reg-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name  = document.getElementById('f-name').value.trim();
-    const email = document.getElementById('f-email').value.trim();
-    const phone = document.getElementById('f-phone').value.trim();
-    if (!name || !email || !phone) return;
-
-    // ── Integre aqui: fetch('/api/register', { method:'POST', body: JSON.stringify({name,email,phone}) })
-
-    closeModal();
-    document.getElementById('page-main').style.display = 'none';
-    const confirm = document.getElementById('page-confirm');
-    confirm.classList.add('show');
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  });
+/* PULSE DOT ANIMATION */
+const style=document.createElement('style');
+style.textContent=`@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}`;
+document.head.appendChild(style);
 </script>
-
 </body>
 </html>
